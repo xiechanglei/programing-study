@@ -99,11 +99,13 @@ public interface PageHandler {
                 String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
                 HtmlDocumentHelper document = HtmlDocumentHelper.create(doc.title)
                         .appendCssLink("/css/prism.min.css")
+                        .appendCssLink("/css/base.css")
                         .appendCssLink("/css/github-markdown.css")
                         .appendJsLink("/js/marked.js")
                         .appendJsLink("/js/prism/prism-core.min.js")
                         .appendJsLink("/js/prism/prism-autoloader.min.js")
                         .appendJsLink("/js/markdown-renderer.js");
+                document.appendBody("<h1>" + doc.title + "</h1>");
                 byte[] bytes = document.appendBody("<template id='md-content'>" + content + "</template>").build().getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
                 exchange.sendResponseHeaders(200, bytes.length);

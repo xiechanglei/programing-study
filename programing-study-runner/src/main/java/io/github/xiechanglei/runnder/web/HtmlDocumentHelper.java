@@ -40,8 +40,8 @@ public class HtmlDocumentHelper {
                 "</head>\n" +
                 "<body>\n" +
                 bodyHtml +
-                footerHtml +
                 "</body>\n" +
+                footerHtml +
                 "</html>";
     }
 
