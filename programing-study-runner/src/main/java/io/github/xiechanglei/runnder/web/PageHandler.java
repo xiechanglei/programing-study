@@ -99,6 +99,7 @@ public interface PageHandler {
                 String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
                 HtmlDocumentHelper document = HtmlDocumentHelper.create(doc.title)
                         .appendCssLink("/css/prism.min.css")
+                        .appendCssLink("/css/github-markdown.css")
                         .appendJsLink("/js/marked.js")
                         .appendJsLink("/js/prism/prism-core.min.js")
                         .appendJsLink("/js/prism/prism-autoloader.min.js")
