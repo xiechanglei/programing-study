@@ -34,13 +34,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <revision>3.5.6.1</revision>
         <auto.service.version>1.1.1</auto.service.version>
+        <commonmark.version>0.27.0</commonmark.version>
     </properties>
 
     <!--    子模块-->
     <modules>
-        <module>programing-study-lession-java</module>
+        <module>programing-study-lesson-java</module>
         <module>programing-study-runner</module>
         <module>programing-study-api</module>
+        <module>programing-study-test</module>
+        <module>programing-study-lesson-rust</module>
     </modules>
 
     <!--  依赖版本管理  -->
@@ -59,7 +62,12 @@
             </dependency>
             <dependency>
                 <groupId>io.github.xiechanglei</groupId>
-                <artifactId>programing-study-lession-java</artifactId>
+                <artifactId>programing-study-lesson-java</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-rust</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

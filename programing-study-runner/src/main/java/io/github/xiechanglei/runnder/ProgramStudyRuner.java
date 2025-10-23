@@ -1,5 +1,12 @@
 package io.github.xiechanglei.runnder;
 
+import com.sun.net.httpserver.HttpServer;
+import io.github.xiechanglei.runnder.doc.SubjectLoader;
+import io.github.xiechanglei.runnder.web.ProgramStudyWebRender;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
 /**
  * 程序学习运行器
  *
@@ -8,13 +15,25 @@ package io.github.xiechanglei.runnder;
  */
 public class ProgramStudyRuner {
     /**
-     * 开始学习编程，主要分为两个模块一个是学习模块，一个是面试题的模块
+     * 不指定端口启动服务
      */
-    public static void start() {
-
+    public static void start() throws IOException {
+        start(0);
     }
 
-    static void main() {
-        start();
+    /**
+     * 指定端口启动服务
+     */
+    public static void start(int needPort) throws IOException {
+        SubjectLoader.loadAllSubjects();
+        // 启动一个随机可用的web端口，提供web界面供用户选择学习的科目和内容
+        HttpServer server = HttpServer.create(new InetSocketAddress(needPort), 0);
+        // 获取端口号
+        int port = server.getAddress().getPort();
+        // 处理请求
+        ProgramStudyWebRender.handleServer(server);
+        server.start();
+        System.out.println("programing study site http://127.0.0.1:" + port);
     }
+
 }
