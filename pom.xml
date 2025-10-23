@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.xiechanglei</groupId>
+    <artifactId>programing-study</artifactId>
+    <version>${revision}</version>
+
+    <!--    由于是父项目，packing 为pom -->
+    <packaging>pom</packaging>
+    <!--  可读名称。它不会直接影响构建生成的文件名或 Maven 仓库中的标识   -->
+    <name>programing-study</name>
+
+
+    <!--    配置需要部署到的maven 服务器-->
+    <distributionManagement>
+        <repository>
+            <id>ahwjmaven</id>
+            <url>http://36.33.27.166:14481/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ahwjmaven</id>
+            <url>http://36.33.27.166:14481/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <!--项目属性-->
+    <properties>
+        <!-- 项目构建配置参数-->
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <revision>3.5.6.1</revision>
+        <auto.service.version>1.1.1</auto.service.version>
+    </properties>
+
+    <!--    子模块-->
+    <modules>
+        <module>programing-study-lession-java</module>
+        <module>programing-study-runner</module>
+        <module>programing-study-api</module>
+    </modules>
+
+    <!--  依赖版本管理  -->
+    <dependencyManagement>
+
+        <dependencies>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-runner</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lession-java</artifactId>
+                <version>${revision}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!--    基础依赖，此处定义的依赖将在所有子模块中自动引入，不需要额外定义-->
+    <dependencies>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--                maven 的源代码插件-->
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <attach>false</attach>
+                    </configuration>
+                </plugin>
+                <!--                版本管理插件-->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten.clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <updatePomFile>true</updatePomFile>
+                        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <release>${maven.compiler.target}</release>
+                    </configuration>
+                </plugin>
+                <!--            打包之前clean-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.3.2</version>
+                    <executions>
+                        <execution>
+                            <id>auto-clean-resources</id>
+                            <phase>initialize</phase> <!-- 在初始化阶段执行 -->
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                            <configuration>
+                                <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                <filesets>
+                                    <fileset>
+                                        <directory>target/classes</directory> <!-- 清理编译目录 -->
+                                    </fileset>
+                                </filesets>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!-- 生成源代码-->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+            </plugin>
+            <!--            版本替换  revision -> 具体的版本号-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+            <!--            新版本jdk语法支持，Thread.ofVirtual-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <!--            打包之前clean-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <!--        打包的时候包含下面的文件夹，并且开启环境参数注入-->
+        <resources>
+            <!--            主要的资源目录-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>
