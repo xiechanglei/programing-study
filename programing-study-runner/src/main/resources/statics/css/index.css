@@ -1,0 +1,25 @@
+.subject-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.subject-block {
+    display: block;
+    padding: 1em;
+    background-color: #f0f0f0;
+    text-decoration: none;
+    color: black;
+    border-radius: 5px;
+}
+
+.subject-desc{
+    font-size: 12px;
+    margin-left: 1em;
+    font-style: italic;
+    color: #666;
+}
+
+.subject-block:hover {
+    background-color: #e0e0e0;
+}

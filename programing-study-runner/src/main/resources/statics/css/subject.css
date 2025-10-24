@@ -1,18 +1,49 @@
-.subject-list {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.subject-block {
-    display: block;
-    padding: 10px;
-    margin: 10px;
-    background-color: #f0f0f0;
-    text-decoration: none;
-    color: black;
+.doc-tab {
+    display: inline-block;
+    padding: 1em;
+    background-color: #f9f9f9;
     border-radius: 5px;
+    margin-right: .5em;
+    cursor: pointer;
+    font-size: 12px;
 }
 
-.subject-block:hover {
+.doc-tab.active, .doc-tab:hover {
+    background-color: #e0e0e0;
+}
+
+.lesson-list, .interview-list {
+    display: none;
+    margin-top: 1em;
+}
+
+.lesson-list.active,
+.interview-list.active {
+    display: block;
+}
+
+.lesson-item, .interview-item {
+    display: block;
+    padding: 1em;
+    font-size: 12px;
+    text-decoration: none;
+    color: #000;
+    background-color: #fcfcfc;
+}
+
+.doc-tab,
+.lesson-item,
+.interview-item {
+    transition: all 0.3s;
+    margin-bottom: .5em;
+}
+
+.lesson-item:hover,
+.interview-item:hover {
+    background-color: #f1f1f1;
+}
+
+.doc-tab.active,
+.doc-tab:hover {
     background-color: #e0e0e0;
 }

@@ -15,6 +15,6 @@ if (markdownContent) {
     const markdownBody = document.createElement("div")
     markdownBody.classList.add("markdown-body")
     markdownBody.innerHTML = marked.parse(markdownContent.innerHTML)
-    document.body.append(markdownBody)
+    document.getElementById("docBlock").append(markdownBody)
     markdownContent.remove()
 }

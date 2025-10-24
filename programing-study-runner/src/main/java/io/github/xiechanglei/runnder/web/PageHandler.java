@@ -25,10 +25,14 @@ public interface PageHandler {
     };
 
     PageHandler RootHandler = (exchange, _) -> {
-        HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/subject.css").appendCssLink("/css/base.css");
-        document.appendBody("<h1>Available Subjects</h1>");
-        document.appendBody("<div class='subject-list'>" + SubjectLoader.all_subjects.stream().map(subject -> "<a class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "</a>").collect(Collectors.joining()) + "</div>");
-        byte[] bytes = document.build().getBytes(StandardCharsets.UTF_8);
+        HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/index.css").appendCssLink("/css/base.css");
+        byte[] bytes = document.appendBody("<div id='pageContent'><h1>Available Subjects</h1>")
+                .appendBody("<div class='subject-list'>")
+                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson 21 | interview 104)</span></a>").collect(Collectors.joining()))
+                .appendBody("</div>")
+                .appendBody("</div>")
+                .build()
+                .getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
         exchange.sendResponseHeaders(200, bytes.length);
         exchange.getResponseBody().write(bytes);
@@ -57,12 +61,17 @@ public interface PageHandler {
         if (subject == null) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
-            HtmlDocumentHelper document = HtmlDocumentHelper.create(subject.name)
-                    .appendCssLink("/css/base.css");
-            document.appendBody("<h1>Lesson: " + subject.name + "</h1>");
-            document.appendBody("<div class='lesson-list'>" + subject.lessons.stream().map(lesson -> "<a class='lesson-item' href='/lesson/" + subject.id + "/" + lesson.id + "'>" + lesson.title + "</a>").collect(Collectors.joining()) + "</div>");
-            document.appendBody("<div class='interview-list'>" + subject.interviews.stream().map(interview -> "<a class='interview-item' href='/interview/" + subject.id + "/" + interview.id + "'>" + interview.title + "</a>").collect(Collectors.joining()) + "</div>");
-            byte[] bytes = document.build().getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = HtmlDocumentHelper.create(subject.name)
+                    .appendCssLink("/css/base.css")
+                    .appendJsLink("/js/subject.js")
+                    .appendCssLink("/css/subject.css")
+                    .appendBody("<div id='pageContent'>")
+                    .appendBody("<h1>" + subject.name + "</h1>")
+                    .appendBody("<div><span class='doc-tab active lesson'>Lessons</span><span class='doc-tab interview'>Interviews</span></div>")
+                    .appendBody("<div class='lesson-list active'>" + subject.lessons.stream().map(lesson -> "<a target='blank' class='lesson-item' href='/lesson/" + subject.id + "/" + lesson.id + "'>" + lesson.title + "</a>").collect(Collectors.joining()) + "</div>")
+                    .appendBody("<div class='interview-list'>" + subject.interviews.stream().map(interview -> "<a target='blank' class='interview-item' href='/interview/" + subject.id + "/" + interview.id + "'>" + interview.title + "</a>").collect(Collectors.joining()) + "</div>")
+                    .appendBody("</div>")
+                    .build().getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
             exchange.sendResponseHeaders(200, bytes.length);
             exchange.getResponseBody().write(bytes);
@@ -100,12 +109,13 @@ public interface PageHandler {
                 HtmlDocumentHelper document = HtmlDocumentHelper.create(doc.title)
                         .appendCssLink("/css/prism.min.css")
                         .appendCssLink("/css/base.css")
+                        .appendCssLink("/css/doc.css")
                         .appendCssLink("/css/github-markdown.css")
                         .appendJsLink("/js/marked.js")
                         .appendJsLink("/js/prism/prism-core.min.js")
                         .appendJsLink("/js/prism/prism-autoloader.min.js")
                         .appendJsLink("/js/markdown-renderer.js");
-                document.appendBody("<h1>" + doc.title + "</h1>");
+                document.appendBody("<div id='pageContent'><div id='docBlock'><h1>" + doc.title + "</h1></div></div>");
                 byte[] bytes = document.appendBody("<template id='md-content'>" + content + "</template>").build().getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
                 exchange.sendResponseHeaders(200, bytes.length);
