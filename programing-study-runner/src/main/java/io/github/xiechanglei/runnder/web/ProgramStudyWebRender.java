@@ -16,6 +16,7 @@ public class ProgramStudyWebRender {
                 case "js" -> JavaScriptFileHandler;
                 case "subject" -> SubjectHandler;
                 case "interview" -> InterViewHandler;
+                case "lesson" -> LessonHandler;
                 default -> ResourceNotFoundHandler;
             };
             handler.handle(exchange, webPathDesc);

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 public interface PageHandler {
@@ -28,7 +29,7 @@ public interface PageHandler {
         HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/index.css").appendCssLink("/css/base.css");
         byte[] bytes = document.appendBody("<div id='pageContent'><h1>Available Subjects</h1>")
                 .appendBody("<div class='subject-list'>")
-                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson 21 | interview 104)</span></a>").collect(Collectors.joining()))
+                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson 21 | interview 104)</span></a>").collect(Collectors.joining()))
                 .appendBody("</div>")
                 .appendBody("</div>")
                 .build()
@@ -56,6 +57,20 @@ public interface PageHandler {
         }
     };
 
+    PageHandler LessonHandler = (exchange, webPathDesc) -> {
+        SubjectInfo subject;
+        if (webPathDesc.pathSegments.length < 2 || (subject = parseSubject(webPathDesc)) == null) {
+            PageHandler.ResourceNotFoundHandler.handle(exchange, null);
+        } else {
+            DocumentInfo interview = subject.findLessonById(webPathDesc.pathSegments[1]);
+            if (interview == null) {
+                PageHandler.ResourceNotFoundHandler.handle(exchange, null);
+            } else {
+                dealAbsMdResource(exchange, interview);
+            }
+        }
+    };
+
     PageHandler SubjectHandler = (exchange, webPathDesc) -> {
         SubjectInfo subject = parseSubject(webPathDesc);
         if (subject == null) {
@@ -68,8 +83,8 @@ public interface PageHandler {
                     .appendBody("<div id='pageContent'>")
                     .appendBody("<h1>" + subject.name + "</h1>")
                     .appendBody("<div><span class='doc-tab active lesson'>Lessons</span><span class='doc-tab interview'>Interviews</span></div>")
-                    .appendBody("<div class='lesson-list active'>" + subject.lessons.stream().map(lesson -> "<a target='blank' class='lesson-item' href='/lesson/" + subject.id + "/" + lesson.id + "'>" + lesson.title + "</a>").collect(Collectors.joining()) + "</div>")
-                    .appendBody("<div class='interview-list'>" + subject.interviews.stream().map(interview -> "<a target='blank' class='interview-item' href='/interview/" + subject.id + "/" + interview.id + "'>" + interview.title + "</a>").collect(Collectors.joining()) + "</div>")
+                    .appendBody("<div class='lesson-list active'>" + subject.lessons.stream().map(lesson -> "<a target='_blank' class='lesson-item' href='/lesson/" + subject.id + "/" + lesson.id + "'>" + lesson.title + "</a>").collect(Collectors.joining()) + "</div>")
+                    .appendBody("<div class='interview-list'>" + subject.interviews.stream().map(interview -> "<a target='_blank' class='interview-item' href='/interview/" + subject.id + "/" + interview.id + "'>" + interview.title + "</a>").collect(Collectors.joining()) + "</div>")
                     .appendBody("</div>")
                     .build().getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
@@ -105,7 +120,7 @@ public interface PageHandler {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
             try (InputStream inputStream = new FileInputStream(file)) {
-                String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                String content = Base64.getEncoder().encodeToString(inputStream.readAllBytes());
                 HtmlDocumentHelper document = HtmlDocumentHelper.create(doc.title)
                         .appendCssLink("/css/prism.min.css")
                         .appendCssLink("/css/base.css")
