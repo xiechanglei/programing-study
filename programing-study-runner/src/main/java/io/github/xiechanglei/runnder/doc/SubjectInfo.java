@@ -11,7 +11,7 @@ import java.util.List;
  * 类的详细说明
  *
  * @author xie
- * @date 2025/10/23
+ * @since 2025/10/23
  */
 public class SubjectInfo {
 

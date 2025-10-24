@@ -9,6 +9,8 @@
         <version>${revision}</version>
     </parent>
 
+    <name>programing-study-api</name>
+
     <artifactId>programing-study-api</artifactId>
 
     <dependencies>

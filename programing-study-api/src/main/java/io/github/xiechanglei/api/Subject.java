@@ -9,7 +9,7 @@ package io.github.xiechanglei.api;
  * 5. 每个学习资料使用单独的文件进行存放，文件命名规则为：001_资料标题.md
  *
  * @author xie
- * @date 2025/10/23
+ * @since 2025/10/23
  */
 public interface Subject {
     /**

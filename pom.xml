@@ -12,19 +12,8 @@
     <!--  可读名称。它不会直接影响构建生成的文件名或 Maven 仓库中的标识   -->
     <name>programing-study</name>
 
-
-    <!--    配置需要部署到的maven 服务器-->
-    <distributionManagement>
-        <repository>
-            <id>ahwjmaven</id>
-            <url>http://36.33.27.166:14481/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ahwjmaven</id>
-            <url>http://36.33.27.166:14481/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
+    <url>https://github.com/xiechanglei/programing-study.git</url>
+    <description>https://github.com/xiechanglei/programing-study.git</description>
 
     <!--项目属性-->
     <properties>
@@ -35,7 +24,31 @@
         <revision>3.5.6.1</revision>
         <auto.service.version>1.1.1</auto.service.version>
         <commonmark.version>0.27.0</commonmark.version>
+        <project.url>https://github.com/xiechanglei/programing-study.git</project.url>
     </properties>
+
+    <developers>
+        <developer>
+            <name>xiechanglei</name>
+            <email>709955748@qq.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version2.0</name>
+            <url>https://www.apache.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!--    scm-->
+    <scm>
+        <connection>scm:git:https://github.com/xiechanglei/programing-study.git</connection>
+        <developerConnection>https://github.com/xiechanglei/programing-study.git</developerConnection>
+        <url>https://github.com/xiechanglei/programing-study.git</url>
+    </scm>
+
 
     <!--    子模块-->
     <modules>
@@ -73,17 +86,13 @@
         </dependencies>
     </dependencyManagement>
 
-
-    <!--    基础依赖，此处定义的依赖将在所有子模块中自动引入，不需要额外定义-->
-    <dependencies>
-    </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <!--                maven 的源代码插件-->
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -95,6 +104,25 @@
                     </executions>
                     <configuration>
                         <attach>false</attach>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.12.0</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <skip>true</skip>
+                        <additionalJOptions>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </additionalJOptions>
                     </configuration>
                 </plugin>
                 <!--                版本管理插件-->
@@ -123,13 +151,33 @@
                         <flattenMode>resolveCiFriendliesOnly</flattenMode>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <skip>true</skip>
+                        <keyname>xiechanglei</keyname>
+                    </configuration>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.1</version>
                     <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <release>${maven.compiler.target}</release>
+                        <source>25</source>
+                        <target>25</target>
+                        <release>25</release>
                     </configuration>
                 </plugin>
                 <!--            打包之前clean-->
@@ -166,6 +214,12 @@
                     <attach>true</attach>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
             <!--            版本替换  revision -> 具体的版本号-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -180,6 +234,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>ossrh</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                </configuration>
             </plugin>
         </plugins>
         <!--        打包的时候包含下面的文件夹，并且开启环境参数注入-->

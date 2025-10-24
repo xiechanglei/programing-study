@@ -7,7 +7,7 @@ import io.github.xiechanglei.api.Subject;
  * java课程信息
  *
  * @author xie
- * @date 2025/10/23
+ * @since 2025/10/23
  */
 @AutoService(Subject.class)
 public class RustSubject implements Subject {

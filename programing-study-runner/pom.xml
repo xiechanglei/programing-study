@@ -8,6 +8,7 @@
         <artifactId>programing-study</artifactId>
         <version>${revision}</version>
     </parent>
+    <name>programing-study-runner</name>
     <artifactId>programing-study-runner</artifactId>
 
     <dependencies>

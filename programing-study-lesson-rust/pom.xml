@@ -8,7 +8,7 @@
         <artifactId>programing-study</artifactId>
         <version>${revision}</version>
     </parent>
-
+    <name>programing-study-lesson-rust</name>
     <artifactId>programing-study-lesson-rust</artifactId>
 
     <dependencies>

@@ -10,7 +10,7 @@ import java.util.ServiceLoader;
  * subject加载器,使用ServiceLoader机制加载所有的Subject实现
  *
  * @author xie
- * @date 2025/10/23
+ * @since 2025/10/23
  */
 public class SubjectLoader {
     public static List<SubjectInfo> all_subjects = new ArrayList<>();
