@@ -29,7 +29,7 @@ public interface PageHandler {
         HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/index.css").appendCssLink("/css/base.css");
         byte[] bytes = document.appendBody("<div id='pageContent'><h1>Available Subjects</h1>")
                 .appendBody("<div class='subject-list'>")
-                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson 21 | interview 104)</span></a>").collect(Collectors.joining()))
+                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson " + subject.lessons.size() + " | interview " + subject.interviews.size() + ")</span></a>").collect(Collectors.joining()))
                 .appendBody("</div>")
                 .appendBody("</div>")
                 .build()
