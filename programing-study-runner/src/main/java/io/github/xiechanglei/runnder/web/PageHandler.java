@@ -62,11 +62,11 @@ public interface PageHandler {
         if (webPathDesc.pathSegments.length < 2 || (subject = parseSubject(webPathDesc)) == null) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
-            DocumentInfo interview = subject.findLessonById(webPathDesc.pathSegments[1]);
-            if (interview == null) {
+            DocumentInfo lession = subject.findLessonById(webPathDesc.pathSegments[1]);
+            if (lession == null) {
                 PageHandler.ResourceNotFoundHandler.handle(exchange, null);
             } else {
-                dealAbsMdResource(exchange, interview);
+                dealAbsMdResource(exchange, lession);
             }
         }
     };

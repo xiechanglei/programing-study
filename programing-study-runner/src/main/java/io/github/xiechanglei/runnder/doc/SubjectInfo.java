@@ -3,8 +3,9 @@ package io.github.xiechanglei.runnder.doc;
 import io.github.xiechanglei.api.Subject;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class SubjectInfo {
         String basePath = subject.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
         interviews = loadDocuments(basePath, "interview");
         lessons = loadDocuments(basePath, "lesson");
+        interviews.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
+        lessons.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
     }
 
     public DocumentInfo findInterviewById(String id) {
@@ -69,7 +72,30 @@ public class SubjectInfo {
         return documents;
     }
 
+    public static MessageDigest digest;
+
+    static {
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static String buildId(String name) {
-        return Base64.getEncoder().encodeToString(name.getBytes());
+        try {
+            byte[] hashBytes = digest.digest(name.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString(); // 得到64位的十六进制数字字符串
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate ID", e);
+        }
     }
 }
