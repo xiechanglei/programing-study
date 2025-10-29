@@ -39,9 +39,9 @@ public interface PageHandler {
         exchange.getResponseBody().write(bytes);
     };
 
-    PageHandler CssFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "css/" + webPathDesc.remainPath, "text/css");
+    PageHandler CssFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "css/" + webPathDesc.remainPath);
 
-    PageHandler JavaScriptFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "js/" + webPathDesc.remainPath, "application/javascript");
+    PageHandler JavaScriptFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "js/" + webPathDesc.remainPath);
 
     PageHandler InterViewHandler = (exchange, webPathDesc) -> {
         SubjectInfo subject;
@@ -50,8 +50,9 @@ public interface PageHandler {
         } else {
             DocumentInfo interview = subject.findInterviewById(webPathDesc.pathSegments[1]);
             if (interview == null) {
-                PageHandler.ResourceNotFoundHandler.handle(exchange, null);
-            } else {
+                webPathDesc.pathSegments[0] = "interview";
+                dealAbsResource(exchange, subject.path + File.separator + String.join(File.separator, webPathDesc.pathSegments));
+            }else{
                 dealAbsMdResource(exchange, interview);
             }
         }
@@ -62,11 +63,14 @@ public interface PageHandler {
         if (webPathDesc.pathSegments.length < 2 || (subject = parseSubject(webPathDesc)) == null) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
-            DocumentInfo lession = subject.findLessonById(webPathDesc.pathSegments[1]);
-            if (lession == null) {
-                PageHandler.ResourceNotFoundHandler.handle(exchange, null);
+            DocumentInfo lesson = subject.findLessonById(webPathDesc.pathSegments[1]);
+            if (lesson == null) {
+                // 尝试寻找静态资源
+                // 将webPathDesc.pathSegments的第一个去掉之后剩下的用/拼接成路径
+                webPathDesc.pathSegments[0] = "lesson";
+                dealAbsResource(exchange, subject.path + File.separator + String.join(File.separator, webPathDesc.pathSegments));
             } else {
-                dealAbsMdResource(exchange, lession);
+                dealAbsMdResource(exchange, lesson);
             }
         }
     };
@@ -101,14 +105,27 @@ public interface PageHandler {
         return subject;
     }
 
-    private static void dealResource(HttpExchange exchange, String resourcePath, String contentType) throws IOException {
+    private static void dealResource(HttpExchange exchange, String resourcePath) throws IOException {
         URL resource = ProgramStudyWebRender.class.getClassLoader().getResource(resourcePath);
         if (resource == null) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
-            exchange.getResponseHeaders().add("Content-Type", contentType + "; charset=utf-8");
+            exchange.getResponseHeaders().add("Content-Type", getContentType(resourcePath));
             exchange.sendResponseHeaders(200, resource.openConnection().getContentLength());
             try (InputStream inputStream = resource.openStream()) {
+                inputStream.transferTo(exchange.getResponseBody());
+            }
+        }
+    }
+
+    private static void dealAbsResource(HttpExchange exchange, String resourcePath) throws IOException {
+        File file = new File(resourcePath);
+        if (!file.exists() || file.isDirectory()) {
+            PageHandler.ResourceNotFoundHandler.handle(exchange, null);
+        } else {
+            exchange.getResponseHeaders().add("Content-Type", getContentType(resourcePath));
+            exchange.sendResponseHeaders(200, file.length());
+            try (InputStream inputStream = new FileInputStream(file)) {
                 inputStream.transferTo(exchange.getResponseBody());
             }
         }
@@ -137,6 +154,19 @@ public interface PageHandler {
                 exchange.getResponseBody().write(bytes);
             }
         }
+    }
+
+    private static String getContentType(String resourcePath) {
+        return switch (resourcePath.toLowerCase().substring(resourcePath.lastIndexOf('.') + 1)) {
+            case "css" -> "text/css; charset=utf-8";
+            case "js" -> "application/javascript; charset=utf-8";
+            case "png" -> "image/png";
+            case "jpg", "jpeg" -> "image/jpeg";
+            case "gif" -> "image/gif";
+            case "svg" -> "image/svg+xml; charset=utf-8";
+            case "html" -> "text/html; charset=utf-8";
+            default -> "application/octet-stream";
+        };
     }
 
     void handle(HttpExchange exchange, WebPathDesc webPathDesc) throws IOException;

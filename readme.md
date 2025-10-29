@@ -83,5 +83,15 @@ public class YourSubject implements Subject {
 
 - **lesson** 课程目录，存放课程的markdown文件
 - **interview** 面试题目录，存放面试题的markdown文件
+- **lesson** 和**interview**目录下可以有子目录，子目录中的资源可以用过相对路径链接或者访问，如：
+
+```markdown
+[xxxx](./res/1.png)
+```
 
 ## that's all , enjoy it .
+
+对自己的任务要求：
+
+- 每天整理3个面试题目
+- 每天整理3个课程信息

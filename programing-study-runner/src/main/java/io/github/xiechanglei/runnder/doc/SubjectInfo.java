@@ -18,6 +18,7 @@ public class SubjectInfo {
 
     public final String name;
     public final String id;
+    public final String path;
 
     public List<DocumentInfo> interviews;
     public List<DocumentInfo> lessons;
@@ -25,9 +26,9 @@ public class SubjectInfo {
     public SubjectInfo(Subject subject) {
         this.name = subject.name();
         this.id = buildId(this.name);
-        String basePath = subject.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        interviews = loadDocuments(basePath, "interview");
-        lessons = loadDocuments(basePath, "lesson");
+        this.path = subject.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        interviews = loadDocuments(this.path, "interview");
+        lessons = loadDocuments(this.path, "lesson");
         interviews.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
         lessons.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
     }
@@ -58,14 +59,13 @@ public class SubjectInfo {
             if (files != null) {
                 for (File file : files) {
                     DocumentInfo doc = new DocumentInfo();
-                    // todo 多级目录
                     doc.id = buildId(file.getName());
                     doc.title = file.getName();
                     if (doc.title.toLowerCase().endsWith(".md")) {
                         doc.title = doc.title.substring(0, doc.title.length() - 3);
+                        doc.path = file.getAbsolutePath();
+                        documents.add(doc);
                     }
-                    doc.path = file.getAbsolutePath();
-                    documents.add(doc);
                 }
             }
         }
