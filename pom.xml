@@ -52,11 +52,19 @@
 
     <!--    子模块-->
     <modules>
-        <module>programing-study-lesson-java</module>
         <module>programing-study-runner</module>
         <module>programing-study-api</module>
         <module>programing-study-test</module>
+        <module>programing-study-lesson-java</module>
         <module>programing-study-lesson-rust</module>
+        <module>programing-study-lesson-css</module>
+        <module>programing-study-lesson-javascript</module>
+        <module>programing-study-lesson-typescript</module>
+        <module>programing-study-lesson-golang</module>
+        <module>programing-study-lesson-python</module>
+        <module>programing-study-lesson-node</module>
+        <module>programing-study-lesson-dart</module>
+        <module>programing-study-lesson-cpp</module>
     </modules>
 
     <!--  依赖版本管理  -->
@@ -81,6 +89,46 @@
             <dependency>
                 <groupId>io.github.xiechanglei</groupId>
                 <artifactId>programing-study-lesson-rust</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-css</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-javascript</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-typescript</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-golang</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-python</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-node</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-dart</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.xiechanglei</groupId>
+                <artifactId>programing-study-lesson-cpp</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

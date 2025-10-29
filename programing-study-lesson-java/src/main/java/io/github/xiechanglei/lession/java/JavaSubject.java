@@ -13,6 +13,6 @@ import io.github.xiechanglei.api.Subject;
 public class JavaSubject implements Subject {
     @Override
     public String name() {
-        return "Java语言基础";
+        return "Java";
     }
 }

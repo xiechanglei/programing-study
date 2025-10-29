@@ -18,15 +18,45 @@
             <groupId>io.github.xiechanglei</groupId>
             <artifactId>programing-study-runner</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.github.xiechanglei</groupId>
             <artifactId>programing-study-lesson-java</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.github.xiechanglei</groupId>
             <artifactId>programing-study-lesson-rust</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-css</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-typescript</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-javascript</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-python</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-golang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-node</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-dart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-cpp</artifactId>
         </dependency>
     </dependencies>
 

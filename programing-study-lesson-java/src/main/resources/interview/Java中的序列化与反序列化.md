@@ -70,7 +70,7 @@ public interface Externalizable extends java.io.Serializable {
 
 ### 五、序列化的使用
 序列化如何使用？来看一下，序列化的使用的几个关键点吧：
-- 声明一个实体类，实现Serializable接口
+- 声明一个实体类，实现Serializable接口 
 - 使用ObjectOutputStream类的writeObject方法，实现序列化
 - 使用ObjectInputStream类的readObject方法，实现反序列化
 
