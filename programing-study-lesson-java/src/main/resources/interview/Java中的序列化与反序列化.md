@@ -14,12 +14,10 @@
 
 - 序列化：把Java对象转换为字节序列的过程
 - 反序列：把字节序列恢复为Java对象的过程
-  ![](https://user-gold-cdn.xitu.io/2020/4/16/1718072401688be6?w=1618&h=615&f=png&s=97837)
 
 ### 二、为什么需要序列化？
 Java对象是运行在JVM的堆内存中的，如果JVM停止后，它的生命也就戛然而止。
 
-![](https://user-gold-cdn.xitu.io/2020/4/18/17188de5182865ab?w=1322&h=802&f=png&s=94894)
 如果想在JVM停止后，把这些对象保存到磁盘或者通过网络传输到另一远程机器，怎么办呢？磁盘这些硬件可不认识Java对象，它们只认识二进制这些机器语言，所以我们就要把这些对象转化为字节数组，这个过程就是序列化啦~
 
 > 打个比喻，作为大城市漂泊的码农，搬家是常态。当我们搬书桌时，桌子太大了就通不过比较小的门，因此我们需要把它拆开再搬过去，这个拆桌子的过程就是序列化。 而我们把书桌复原回来（安装）的过程就是反序列化啦。
@@ -27,18 +25,18 @@ Java对象是运行在JVM的堆内存中的，如果JVM停止后，它的生命�
 ### 三、序列化用途
 序列化使得对象可以脱离程序运行而独立存在，它主要有两种用途：
 
-![](https://user-gold-cdn.xitu.io/2020/4/19/17190104b236e38c?w=886&h=444&f=png&s=33182)
-- 1） 序列化机制可以让对象地保存到硬盘上，减轻内存压力的同时，也起了持久化的作用；
+- 1 序列化机制可以让对象地保存到硬盘上，减轻内存压力的同时，也起了持久化的作用；
 
 > 比如 Web服务器中的Session对象，当有 10+万用户并发访问的，就有可能出现10万个Session对象，内存可能消化不良，于是Web容器就会把一些seesion先序列化到硬盘中，等要用了，再把保存在硬盘中的对象还原到内存中。
 
-- 2） 序列化机制让Java对象在网络传输不再是天方夜谭。
+- 2 序列化机制让Java对象在网络传输不再是天方夜谭。
+
 > 我们在使用Dubbo远程调用服务框架时，需要把传输的Java对象实现Serializable接口，即让Java对象序列化，因为这样才能让对象在网络上传输。
 
 
 ### 四、Java序列化常用API
 
-```
+```java
 java.io.ObjectOutputStream
 java.io.ObjectInputStream
 java.io.Serializable
@@ -47,13 +45,13 @@ java.io.Externalizable
 #### Serializable 接口
 Serializable接口是一个标记接口，没有方法或字段。一旦实现了此接口，就标志该类的对象就是可序列化的。
 
-```
+```java
 public interface Serializable {
 }
 ```
 #### Externalizable 接口
 Externalizable继承了Serializable接口，还定义了两个抽象方法：writeExternal()和readExternal()，如果开发人员使用Externalizable来实现序列化和反序列化，需要重写writeExternal()和readExternal()方法
-```
+```java
 public interface Externalizable extends java.io.Serializable {
     void writeExternal(ObjectOutput out) throws IOException;
     void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;
@@ -75,7 +73,7 @@ public interface Externalizable extends java.io.Serializable {
 - 使用ObjectInputStream类的readObject方法，实现反序列化
 
 #### 声明一个Student类，实现Serializable
-```
+```java
 public class Student implements Serializable {
 
     private Integer age;
@@ -97,7 +95,7 @@ public class Student implements Serializable {
 ```
 #### 使用ObjectOutputStream类的writeObject方法，对Student对象实现序列化
 把Student对象设置值后，写入一个文件，即序列化，哈哈~
-```
+```java
 ObjectOutputStream objectOutputStream = new ObjectOutputStream( new FileOutputStream("D:\\text.out"));
 Student student = new Student();
 student.setAge(25);
@@ -111,7 +109,7 @@ objectOutputStream.close();
 ![](https://user-gold-cdn.xitu.io/2020/4/18/1718cb65a1d08785?w=896&h=311&f=png&s=59011)
 #### 使用ObjectInputStream类的readObject方法，实现反序列化，重新生成student对象
 再把test.out文件读取出来，反序列化为Student对象
-```
+```java
 ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("D:\\text.out"));
 Student student = (Student) objectInputStream.readObject();
 System.out.println("name="+student.getName());
@@ -121,7 +119,7 @@ System.out.println("name="+student.getName());
 
 #### Serializable底层
 Serializable接口，只是一个空的接口，没有方法或字段，为什么这么神奇，实现了它就可以让对象序列化了？
-```
+```java
 public interface Serializable {
 }
 ```
@@ -130,7 +128,7 @@ public interface Serializable {
 ![](https://user-gold-cdn.xitu.io/2020/4/18/1718cbbb01a02999?w=607&h=542&f=png&s=46516)
 
 序列化过程中抛出异常啦，堆栈信息如下：
-```
+```java
 Exception in thread "main" java.io.NotSerializableException: com.example.demo.Student
 	at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1184)
 	at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:348)
@@ -147,7 +145,7 @@ ObjectOutputStream 在序列化的时候，会判断被序列化的Object是哪�
 
 writeObject直接调用的就是writeObject0（）方法，
 
-```
+```java
 public final void writeObject(Object obj) throws IOException {
     ......
     writeObject0(obj, false);
@@ -155,10 +153,8 @@ public final void writeObject(Object obj) throws IOException {
 }
 ```
 writeObject0 主要实现是对象的不同类型，调用不同的方法写入序列化数据，这里面如果对象实现了Serializable接口，就调用writeOrdinaryObject()方法~
-```
-private void writeObject0(Object obj, boolean unshared)
-        throws IOException
-    {
+```java
+private void writeObject0(Object obj, boolean unshared) throws IOException {
     ......
    //String类型
     if (obj instanceof String) {
@@ -185,12 +181,8 @@ private void writeObject0(Object obj, boolean unshared)
 ```
 
 writeOrdinaryObject()会先调用writeClassDesc(desc)，写入该类的生成信息，然后调用writeSerialData方法,写入序列化数据
-```
-    private void writeOrdinaryObject(Object obj,
-                                     ObjectStreamClass desc,
-                                     boolean unshared)
-        throws IOException
-    {
+```java
+    private void writeOrdinaryObject(Object obj, ObjectStreamClass desc, boolean unshared) throws IOException {
             ......
             //调用ObjectStreamClass的写入方法
             writeClassDesc(desc, false);
@@ -206,9 +198,8 @@ writeOrdinaryObject()会先调用writeClassDesc(desc)，写入该类的生成信
 ```
 writeSerialData（）实现的就是写入被序列化对象的字段数据
 
-```
-  private void writeSerialData(Object obj, ObjectStreamClass desc)
-        throws IOException
+```java
+  private void writeSerialData(Object obj, ObjectStreamClass desc) throws IOException
     {
         for (int i = 0; i < slots.length; i++) {
             if (slotDesc.hasWriteObjectMethod()) {
@@ -222,9 +213,8 @@ writeSerialData（）实现的就是写入被序列化对象的字段数据
     }
 ```
 defaultWriteFields（）方法，获取类的基本数据类型数据，直接写入底层字节容器；获取类的obj类型数据，循环递归调用writeObject0()方法，写入数据~
-```
-   private void defaultWriteFields(Object obj, ObjectStreamClass desc)
-        throws IOException
+```java
+   private void defaultWriteFields(Object obj, ObjectStreamClass desc) throws IOException
     {   
         // 获取类的基本数据类型数据，保存到primVals字节数组
         desc.getPrimFieldValues(obj, primVals);
@@ -257,7 +247,7 @@ defaultWriteFields（）方法，获取类的基本数据类型数据，直接�
 
 #### static静态变量和transient 修饰的字段是不会被序列化的
 static静态变量和transient 修饰的字段是不会被序列化的,我们来看例子分析一波~ Student类加了一个类变量gender和一个transient修饰的字段specialty
-```
+```java
 public class Student implements Serializable {
 
     private Integer age;
@@ -296,7 +286,7 @@ public class Student implements Serializable {
 
 #### serialVersionUID问题
 serialVersionUID 表面意思就是**序列化版本号ID**，其实每一个实现Serializable接口的类，都有一个表示序列化版本标识符的静态变量，或者默认等于1L，或者等于对象的哈希码。
-```
+```java
 private static final long serialVersionUID = -6384871967268653799L;
 ```
 **serialVersionUID有什么用？**
@@ -307,7 +297,7 @@ JAVA序列化的机制是通过判断类的serialVersionUID来验证版本是否
 
 ![](https://user-gold-cdn.xitu.io/2020/4/19/1718f8eb4c01274f?w=593&h=315&f=png&s=29002)
 
-```
+```java
 Exception in thread "main" java.io.InvalidClassException: com.example.demo.Student;
 local class incompatible: stream classdesc serialVersionUID = 3096644667492403394,
 local class serialVersionUID = 4429793331949928814
@@ -321,7 +311,7 @@ local class serialVersionUID = 4429793331949928814
 ```
 从日志堆栈异常信息可以看到，文件流中的class和当前类路径中的class不同了，它们的serialVersionUID不相同，所以反序列化抛出InvalidClassException异常。那么，如果确实需要修改Student类，又想反序列化成功，怎么办呢？可以手动指定serialVersionUID的值，一般可以设置为1L或者，或者让我们的编辑器IDE生成
 
-```
+```java
 private static final long serialVersionUID = -6564022808907262054L;
 ```
 实际上，阿里开发手册，强制要求序列化类新增属性时，不能修改serialVersionUID字段~
@@ -330,7 +320,7 @@ private static final long serialVersionUID = -6564022808907262054L;
 #### 如果某个序列化类的成员变量是对象类型，则该对象类型的类必须实现序列化
 给Student类添加一个Teacher类型的成员变量，其中Teacher是没有实现序列化接口的
 
-```
+```java
 public class Student implements Serializable {
     
     private Integer age;
@@ -344,7 +334,7 @@ public class Teacher  {
 }
 ```
 序列化运行，就报NotSerializableException异常啦
-```
+```java
 Exception in thread "main" java.io.NotSerializableException: com.example.demo.Teacher
 	at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1184)
 	at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1548)
@@ -359,7 +349,7 @@ Exception in thread "main" java.io.NotSerializableException: com.example.demo.Te
 
 #### 子类实现了Serializable，父类没有实现Serializable接口的话，父类不会被序列化。
 子类Student实现了Serializable接口，父类User没有实现Serializable接口
-```
+```java
 //父类实现了Serializable接口
 public class Student  extends User implements Serializable {
 

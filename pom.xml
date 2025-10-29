@@ -65,6 +65,17 @@
         <module>programing-study-lesson-node</module>
         <module>programing-study-lesson-dart</module>
         <module>programing-study-lesson-cpp</module>
+
+        <!--        todo  c-->
+        <!--        todo  deno-->
+        <!--        todo  database-->
+        <!--        todo  shell-->
+        <!--        todo  docker-->
+        <!--        todo  k8s-->
+        <!--        todo redis-->
+        <!--        todo linux-->
+        <!--        todo message queue-->
+
     </modules>
 
     <!--  依赖版本管理  -->
