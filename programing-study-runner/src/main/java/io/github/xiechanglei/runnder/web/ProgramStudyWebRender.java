@@ -19,12 +19,8 @@ public class ProgramStudyWebRender {
             WebPathDesc webPathDesc = WebPathDesc.parseRequestPath(requestPath);
             PageHandler handler = switch (webPathDesc.type) {
                 case "" -> RootHandler;
-                case "css" -> CssFileHandler;
-                case "js" -> JavaScriptFileHandler;
-                case "subject" -> SubjectHandler;
-                case "interview" -> InterViewHandler;
-                case "lesson" -> LessonHandler;
-                default -> ResourceNotFoundHandler;
+                case "css", "js" -> StaticResourceHandler;
+                default -> SubjectHandler;
             };
             handler.handle(exchange, webPathDesc);
             exchange.close();

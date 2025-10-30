@@ -81,9 +81,9 @@ public class YourSubject implements Subject {
 
 按照约定，**programing-study-runner**会在注册到Subject接口的类所在模块的`resources`目录下寻找如下目录结构：
 
-- **lesson** 课程目录，存放课程的markdown文件
-- **interview** 面试题目录，存放面试题的markdown文件
-- **lesson** 和**interview**目录下可以有子目录，子目录中的资源可以用过相对路径链接或者访问，如：
+- **docs** 目录 为课程的根目录,所有的资源都应该放在该目录下
+- **docs** 目录下的第一级子目录为分组目录，如**lesson**和**interview**目录,子目录下存放所有的课程的markdown文档,目前仅仅支持检索第一级子目录
+- 静态的资源可以放在**docs**目录下的任何位置,然后在文档中使用相对路径引用资源
 
 ```markdown
 [xxxx](./res/1.png)

@@ -1,12 +1,32 @@
-const tabs = [document.querySelector(".doc-tab.lesson"), document.querySelector(".doc-tab.interview")];
-const lists = [document.querySelector(".lesson-list"), document.querySelector(".interview-list")];
+const allTabs = Array.from(document.querySelectorAll(".lesson-tab"));
+const allLists = Array.from(document.querySelectorAll(".lesson-list"));
 
-tabs.forEach((tab, index) => {
-    let otherIndex = (index + 1) % 2;
+allLists.forEach(list => list.lessionId = list.getAttribute("lesson"));
+
+allTabs.forEach((tab) => {
+    tab.lessionId = tab.getAttribute("lesson");
     tab.addEventListener("click", () => {
+        if (tab.classList.contains("active")) {
+            return
+        }
+        allTabs.forEach(othTab => {
+            if (othTab !== tab) {
+                othTab.classList.remove("active")
+            }
+        })
         tab.classList.add("active")
-        lists[index].classList.add("active");
-        tabs[otherIndex].classList.remove("active")
-        lists[otherIndex].classList.remove("active");
+
+        allLists.forEach(list => {
+            if (list.lessionId !== tab.lessionId) {
+                list.classList.remove("active")
+            } else {
+                list.classList.add("active")
+            }
+        })
     });
 })
+
+// click first tab
+if (allTabs.length > 0) {
+    allTabs[0].click()
+}

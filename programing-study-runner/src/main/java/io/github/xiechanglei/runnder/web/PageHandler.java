@@ -2,6 +2,7 @@ package io.github.xiechanglei.runnder.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import io.github.xiechanglei.runnder.doc.DocumentInfo;
+import io.github.xiechanglei.runnder.doc.LessonInfo;
 import io.github.xiechanglei.runnder.doc.SubjectInfo;
 import io.github.xiechanglei.runnder.doc.SubjectLoader;
 
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 public interface PageHandler {
     String STATIC_RESOURCE = "statics/";
 
-
     PageHandler ResourceNotFoundHandler = (exchange, _) -> {
         String response = "404 Not Found";
         exchange.sendResponseHeaders(404, response.length());
@@ -29,7 +29,7 @@ public interface PageHandler {
         HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/index.css").appendCssLink("/css/base.css");
         byte[] bytes = document.appendBody("<div id='pageContent'><h1>Available Subjects</h1>")
                 .appendBody("<div class='subject-list'>")
-                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/subject/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson " + subject.lessons.size() + " | interview " + subject.interviews.size() + ")</span></a>").collect(Collectors.joining()))
+                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson " + subject.lessons.size() + " | document " + subject.documentCount + ")</span></a>").collect(Collectors.joining()))
                 .appendBody("</div>")
                 .appendBody("</div>")
                 .build()
@@ -39,71 +39,59 @@ public interface PageHandler {
         exchange.getResponseBody().write(bytes);
     };
 
-    PageHandler CssFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "css/" + webPathDesc.remainPath);
-
-    PageHandler JavaScriptFileHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + "js/" + webPathDesc.remainPath);
-
-    PageHandler InterViewHandler = (exchange, webPathDesc) -> {
-        SubjectInfo subject;
-        if (webPathDesc.pathSegments.length < 2 || (subject = parseSubject(webPathDesc)) == null) {
-            PageHandler.ResourceNotFoundHandler.handle(exchange, null);
-        } else {
-            DocumentInfo interview = subject.findInterviewById(webPathDesc.pathSegments[1]);
-            if (interview == null) {
-                webPathDesc.pathSegments[0] = "interview";
-                dealAbsResource(exchange, subject.path + File.separator + String.join(File.separator, webPathDesc.pathSegments));
-            }else{
-                dealAbsMdResource(exchange, interview);
-            }
-        }
-    };
-
-    PageHandler LessonHandler = (exchange, webPathDesc) -> {
-        SubjectInfo subject;
-        if (webPathDesc.pathSegments.length < 2 || (subject = parseSubject(webPathDesc)) == null) {
-            PageHandler.ResourceNotFoundHandler.handle(exchange, null);
-        } else {
-            DocumentInfo lesson = subject.findLessonById(webPathDesc.pathSegments[1]);
-            if (lesson == null) {
-                // 尝试寻找静态资源
-                // 将webPathDesc.pathSegments的第一个去掉之后剩下的用/拼接成路径
-                webPathDesc.pathSegments[0] = "lesson";
-                dealAbsResource(exchange, subject.path + File.separator + String.join(File.separator, webPathDesc.pathSegments));
-            } else {
-                dealAbsMdResource(exchange, lesson);
-            }
-        }
-    };
+    PageHandler StaticResourceHandler = (exchange, webPathDesc) -> dealResource(exchange, STATIC_RESOURCE + webPathDesc.fullPath);
 
     PageHandler SubjectHandler = (exchange, webPathDesc) -> {
-        SubjectInfo subject = parseSubject(webPathDesc);
+        SubjectInfo subject = SubjectLoader.getSubjectById(webPathDesc.type);
         if (subject == null) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
+            return;
+        }
+        if (webPathDesc.pathSegments.length == 0) {
+            handleSubjectInfo(exchange, subject);
         } else {
-            byte[] bytes = HtmlDocumentHelper.create(subject.name)
-                    .appendCssLink("/css/base.css")
-                    .appendJsLink("/js/subject.js")
-                    .appendCssLink("/css/subject.css")
-                    .appendBody("<div id='pageContent'>")
-                    .appendBody("<h1>" + subject.name + "</h1>")
-                    .appendBody("<div><span class='doc-tab active lesson'>Lessons</span><span class='doc-tab interview'>Interviews</span></div>")
-                    .appendBody("<div class='lesson-list active'>" + subject.lessons.stream().map(lesson -> "<a target='_blank' class='lesson-item' href='/lesson/" + subject.id + "/" + lesson.id + "'>" + lesson.title + "</a>").collect(Collectors.joining()) + "</div>")
-                    .appendBody("<div class='interview-list'>" + subject.interviews.stream().map(interview -> "<a target='_blank' class='interview-item' href='/interview/" + subject.id + "/" + interview.id + "'>" + interview.title + "</a>").collect(Collectors.joining()) + "</div>")
-                    .appendBody("</div>")
-                    .build().getBytes(StandardCharsets.UTF_8);
-            exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
-            exchange.sendResponseHeaders(200, bytes.length);
-            exchange.getResponseBody().write(bytes);
+            handleSubjectResource(exchange, webPathDesc, subject);
         }
     };
 
-    private static SubjectInfo parseSubject(WebPathDesc webPathDesc) throws IOException {
-        SubjectInfo subject = null;
-        if (webPathDesc.pathSegments.length > 0) {
-            subject = SubjectLoader.getSubjectById(webPathDesc.pathSegments[0]);
-        }
-        return subject;
+    static void handleSubjectInfo(HttpExchange exchange, SubjectInfo subject) throws IOException {
+        HtmlDocumentHelper documentHelper = HtmlDocumentHelper.create(subject.name)
+                .appendCssLink("/css/base.css")
+                .appendJsLink("/js/subject.js")
+                .appendCssLink("/css/subject.css")
+                .appendBody("<div id='pageContent'>")
+                .appendBody("<h1>" + subject.name + "</h1>");
+        String lessonElements = subject.lessons.keySet().stream().map(lesson -> "<span class='lesson-tab' lesson='" + lesson.id() + "'>" + lesson.title() + "</span>").collect(Collectors.joining());
+        documentHelper.appendBody("<div>" + lessonElements + "</div>");
+        subject.lessons.forEach((lessonId, lesson) -> {
+            documentHelper.appendBody("<div class='lesson-list' lesson='" + lessonId.id() + "'>" + lesson.stream().map(doc -> "<a target='_blank' class='lesson-item' href='/" + subject.id + "/" + lessonId.id() + "/" + doc.id() + "'>" + doc.title() + "</a>").collect(Collectors.joining()) + "</div>");
+        });
+        documentHelper.appendBody("</div>");
+        byte[] bytes = documentHelper.build().getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
+        exchange.sendResponseHeaders(200, bytes.length);
+        exchange.getResponseBody().write(bytes);
     }
+
+    static void handleSubjectResource(HttpExchange exchange, WebPathDesc webPathDesc, SubjectInfo subject) throws IOException {
+        // 优先转化第一级子目录是课程名称.第二级目录是文档名称的资源
+        LessonInfo lesson = subject.findLessonById(webPathDesc.pathSegments[0]);
+        DocumentInfo document = null;
+        if (lesson != null) {
+            webPathDesc.pathSegments[0] = lesson.title();
+            document = subject.findDocument(lesson, webPathDesc.pathSegments[1]);
+            if (document != null) {
+                webPathDesc.pathSegments[1] = document.originalTitle();
+            }
+        }
+        String resourcePath = subject.path + File.separator + String.join(File.separator, webPathDesc.pathSegments);
+        if (webPathDesc.pathSegments.length == 2 && document != null) {
+            dealAbsMdResource(exchange, resourcePath, document.title());
+        } else {
+            dealAbsResource(exchange, resourcePath);
+        }
+    }
+
 
     private static void dealResource(HttpExchange exchange, String resourcePath) throws IOException {
         URL resource = ProgramStudyWebRender.class.getClassLoader().getResource(resourcePath);
@@ -131,14 +119,14 @@ public interface PageHandler {
         }
     }
 
-    private static void dealAbsMdResource(HttpExchange exchange, DocumentInfo doc) throws IOException {
-        File file = new File(doc.path);
+    private static void dealAbsMdResource(HttpExchange exchange, String resourcePath, String title) throws IOException {
+        File file = new File(resourcePath);
         if (!file.exists() || file.isDirectory()) {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
             try (InputStream inputStream = new FileInputStream(file)) {
                 String content = Base64.getEncoder().encodeToString(inputStream.readAllBytes());
-                HtmlDocumentHelper document = HtmlDocumentHelper.create(doc.title)
+                HtmlDocumentHelper document = HtmlDocumentHelper.create(title)
                         .appendCssLink("/css/prism.min.css")
                         .appendCssLink("/css/base.css")
                         .appendCssLink("/css/doc.css")
@@ -147,7 +135,7 @@ public interface PageHandler {
                         .appendJsLink("/js/prism/prism-core.min.js")
                         .appendJsLink("/js/prism/prism-autoloader.min.js")
                         .appendJsLink("/js/markdown-renderer.js");
-                document.appendBody("<div id='pageContent'><div id='docBlock'><h1>" + doc.title + "</h1></div></div>");
+                document.appendBody("<div id='pageContent'><div id='docBlock'><h1>" + title + "</h1></div></div>");
                 byte[] bytes = document.appendBody("<template id='md-content'>" + content + "</template>").build().getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
                 exchange.sendResponseHeaders(200, bytes.length);

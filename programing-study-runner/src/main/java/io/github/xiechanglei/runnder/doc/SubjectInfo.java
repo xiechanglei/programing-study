@@ -5,72 +5,83 @@ import io.github.xiechanglei.api.Subject;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-/**
- * 类的详细说明
- *
- * @author xie
- * @since 2025/10/23
- */
 public class SubjectInfo {
+
+    private static final String FILES_DIR = "docs";
 
     public final String name;
     public final String id;
     public final String path;
 
-    public List<DocumentInfo> interviews;
-    public List<DocumentInfo> lessons;
+    public final TreeMap<LessonInfo, Set<DocumentInfo>> lessons = new TreeMap<>(Comparator.comparing(LessonInfo::title));
+
+    public int documentCount = 0;
 
     public SubjectInfo(Subject subject) {
         this.name = subject.name();
         this.id = buildId(this.name);
-        this.path = subject.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        interviews = loadDocuments(this.path, "interview");
-        lessons = loadDocuments(this.path, "lesson");
-        interviews.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
-        lessons.sort((a, b) -> a.title.compareToIgnoreCase(b.title));
+        this.path = subject.getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + File.separator + FILES_DIR;
+        this.parse();
     }
 
-    public DocumentInfo findInterviewById(String id) {
-        for (DocumentInfo doc : interviews) {
-            if (doc.id.equals(id)) {
-                return doc;
-            }
-        }
-        return null;
-    }
-
-    public DocumentInfo findLessonById(String id) {
-        for (DocumentInfo doc : lessons) {
-            if (doc.id.equals(id)) {
-                return doc;
-            }
-        }
-        return null;
-    }
-
-    private static List<DocumentInfo> loadDocuments(String basePath, String dir) {
-        List<DocumentInfo> documents = new ArrayList<>();
-        File interviewDir = new File(basePath + File.separator + dir);
-        if (interviewDir.exists() && interviewDir.isDirectory()) {
-            File[] files = interviewDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    DocumentInfo doc = new DocumentInfo();
-                    doc.id = buildId(file.getName());
-                    doc.title = file.getName();
-                    if (doc.title.toLowerCase().endsWith(".md")) {
-                        doc.title = doc.title.substring(0, doc.title.length() - 3);
-                        doc.path = file.getAbsolutePath();
-                        documents.add(doc);
+    private void parse() {
+        File baseDir = new File(this.path);
+        if (baseDir.exists() && baseDir.isDirectory()) {
+            File[] subFiles = baseDir.listFiles();
+            if (subFiles != null) {
+                for (File file : subFiles) {
+                    if (file.isDirectory()) {
+                        loadLesson(file);
                     }
                 }
             }
         }
-        return documents;
     }
+
+    private void loadLesson(File dir) {
+        String lessonName = dir.getName();
+        LessonInfo lessonInfo = new LessonInfo(buildId(lessonName), lessonName);
+        Set<DocumentInfo> docs = new TreeSet<>(Comparator.comparing(DocumentInfo::title));
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile() && file.getName().toLowerCase().endsWith(".md")) {
+                    DocumentInfo doc = new DocumentInfo(buildId(file.getName()),
+                            file.getName().substring(0, file.getName().length() - 3), file.getName());
+                    docs.add(doc);
+                }
+            }
+        }
+
+        if (!docs.isEmpty()) {
+            lessons.put(lessonInfo, docs);
+            documentCount += docs.size();
+        }
+    }
+
+    public DocumentInfo findDocument(LessonInfo lesson, String documentId) {
+        Set<DocumentInfo> docs = lessons.get(lesson);
+        if (docs != null) {
+            for (DocumentInfo doc : docs) {
+                if (doc.id().equals(documentId)) {
+                    return doc;
+                }
+            }
+        }
+        return null;
+    }
+
+    public LessonInfo findLessonById(String lessonId) {
+        for (LessonInfo lesson : lessons.keySet()) {
+            if (lesson.id().equals(lessonId)) {
+                return lesson;
+            }
+        }
+        return null;
+    }
+
 
     public static MessageDigest digest;
 

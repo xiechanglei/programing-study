@@ -1,10 +1,10 @@
 package io.github.xiechanglei.runnder.doc;
 
 /**
- * 文档信息
+ * 课程信息
  *
  * @author xie
  * @since 2025/10/23
  */
-public record DocumentInfo(String id, String title, String originalTitle) {
+public record LessonInfo(String id, String title) {
 }

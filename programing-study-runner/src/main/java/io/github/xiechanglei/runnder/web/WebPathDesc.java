@@ -1,14 +1,16 @@
 package io.github.xiechanglei.runnder.web;
 
 public class WebPathDesc {
-    String type;
     String[] pathSegments;
-    String remainPath;
+    String type;
+    String fullPath;
+    String subPath;
 
     public WebPathDesc(String type, String[] params) {
         this.type = type;
         this.pathSegments = params;
-        this.remainPath = String.join("/", params);
+        this.subPath = String.join("/", params);
+        this.fullPath = "/" + type + (params.length > 0 ? ("/" + this.subPath) : "");
     }
 
 
