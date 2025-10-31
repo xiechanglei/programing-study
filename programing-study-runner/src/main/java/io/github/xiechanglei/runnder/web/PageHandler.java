@@ -27,9 +27,9 @@ public interface PageHandler {
 
     PageHandler RootHandler = (exchange, _) -> {
         HtmlDocumentHelper document = HtmlDocumentHelper.create("Programing Study").appendCssLink("/css/index.css").appendCssLink("/css/base.css");
-        byte[] bytes = document.appendBody("<div id='pageContent'><h1>Available Subjects</h1>")
+        byte[] bytes = document.appendBody("<div id='pageContent'><h1 class='pro-title'>Available Subjects</h1>")
                 .appendBody("<div class='subject-list'>")
-                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block' href=\"/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson " + subject.lessons.size() + " | document " + subject.documentCount + ")</span></a>").collect(Collectors.joining()))
+                .appendBody(SubjectLoader.all_subjects.stream().map(subject -> "<a target='_blank' class='subject-block btn' href=\"/" + subject.id + "\">" + subject.name + "<span class='subject-desc'>(lesson " + subject.lessons.size() + " | document " + subject.documentCount + ")</span></a>").collect(Collectors.joining()))
                 .appendBody("</div>")
                 .appendBody("</div>")
                 .build()
@@ -64,7 +64,7 @@ public interface PageHandler {
         String lessonElements = subject.lessons.keySet().stream().map(lesson -> "<span class='lesson-tab' lesson='" + lesson.id() + "'>" + lesson.title() + "</span>").collect(Collectors.joining());
         documentHelper.appendBody("<div>" + lessonElements + "</div>");
         subject.lessons.forEach((lessonId, lesson) -> {
-            documentHelper.appendBody("<div class='lesson-list' lesson='" + lessonId.id() + "'>" + lesson.stream().map(doc -> "<a target='_blank' class='lesson-item' href='/" + subject.id + "/" + lessonId.id() + "/" + doc.id() + "'>" + doc.title() + "</a>").collect(Collectors.joining()) + "</div>");
+            documentHelper.appendBody("<div class='lesson-list' lesson='" + lessonId.id() + "'>" + lesson.stream().map(doc -> "<a target='_blank' class='lesson-item btn' href='/" + subject.id + "/" + lessonId.id() + "/" + doc.id() + "'>" + doc.title() + "</a>").collect(Collectors.joining()) + "</div>");
         });
         documentHelper.appendBody("</div>");
         byte[] bytes = documentHelper.build().getBytes(StandardCharsets.UTF_8);
@@ -99,6 +99,7 @@ public interface PageHandler {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
             exchange.getResponseHeaders().add("Content-Type", getContentType(resourcePath));
+            exchange.getResponseHeaders().add("Cache-Control", "public, max-age=86400");
             exchange.sendResponseHeaders(200, resource.openConnection().getContentLength());
             try (InputStream inputStream = resource.openStream()) {
                 inputStream.transferTo(exchange.getResponseBody());
@@ -112,6 +113,7 @@ public interface PageHandler {
             PageHandler.ResourceNotFoundHandler.handle(exchange, null);
         } else {
             exchange.getResponseHeaders().add("Content-Type", getContentType(resourcePath));
+            exchange.getResponseHeaders().add("Cache-Control", "public, max-age=86400");
             exchange.sendResponseHeaders(200, file.length());
             try (InputStream inputStream = new FileInputStream(file)) {
                 inputStream.transferTo(exchange.getResponseBody());

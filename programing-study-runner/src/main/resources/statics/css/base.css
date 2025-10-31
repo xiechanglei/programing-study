@@ -12,3 +12,19 @@ body{
     padding: 16px;
     margin: 0 auto;
 }
+
+.btn {
+    transition: all 200ms ease-in-out;
+    color: #000;
+    background-color: #eee;
+    padding: 1em;
+    text-decoration: none;
+    border-radius: 5px;
+    display: block;
+    font-size: 12px;
+}
+
+.btn:hover {
+    background-color: #8957e533;
+    color: #8957e5;
+}

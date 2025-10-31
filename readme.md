@@ -15,17 +15,14 @@
 </parent>
 
 <dependicies>
-<dependency>
-    <groupId>io.github.xiechanglei</groupId>
-    <artifactId>programing-study-runner</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>io.github.xiechanglei</groupId>
-    <artifactId>programing-study-lesson-java</artifactId>
-</dependency>
+    <dependency>
+        <groupId>io.github.xiechanglei</groupId>
+        <artifactId>programing-study-lesson-java</artifactId>
+    </dependency>
 </dependicies>
 ```
+
+> 这里使用父项目的方式，只是为了不需要在下方的依赖中不用再写版本号而已。你也可以选择直接引入`programing-study-lesson-java`模块，并且指定版本号。
 
 然后在main方法中调用如下代码：
 
@@ -57,6 +54,10 @@ ProgramStudyRuner.start的方法还支持传入一个int类型参数表示指定
 <dependency>
     <groupId>io.github.xiechanglei</groupId>
     <artifactId>programing-study-api</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.github.xiechanglei</groupId>
+    <artifactId>programing-study-runner</artifactId>
 </dependency>
 ```
 

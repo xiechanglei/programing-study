@@ -1,3 +1,23 @@
+.pro-title {
+    color: #666;
+    --back-color:#aaa;
+    font-size: 40px;
+    font-weight: bold;
+    position: relative;
+    z-index:2;
+}
+
+.pro-title:before {
+    content: "Available Subjects";
+    position: absolute;
+    color: var(--back-color);
+    transform: scaleY(0.9) skew(50deg);
+    transform-origin: center 78%;
+    z-index: -1;
+    -webkit-mask-image: -webkit-linear-gradient(transparent, var(--back-color));
+    animation: sunrise 5s infinite linear alternate;
+}
+
 .subject-list {
     display: flex;
     flex-wrap: wrap;
@@ -5,21 +25,23 @@
 }
 
 .subject-block {
-    display: block;
-    padding: 1em;
-    background-color: #f0f0f0;
-    text-decoration: none;
-    color: black;
-    border-radius: 5px;
+    font-weight: bold;
 }
 
 .subject-desc{
-    font-size: 12px;
+    font-size: 11px;
     margin-left: 1em;
     font-style: italic;
     color: #666;
+    font-weight: normal;
 }
 
-.subject-block:hover {
-    background-color: #e0e0e0;
+
+@keyframes sunrise {
+    0% {
+        transform: scaleY(0.9) skew(50deg);
+    }
+    100% {
+        transform: scaleY(0.9) skew(-50deg);
+    }
 }

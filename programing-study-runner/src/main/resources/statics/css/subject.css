@@ -1,15 +1,17 @@
 .lesson-tab {
     display: inline-block;
     padding: 1em;
-    background-color: #f9f9f9;
-    border-radius: 5px;
     margin-right: .5em;
     cursor: pointer;
     font-size: 12px;
+    border-bottom: 2px solid transparent;
+    color: #888;
+    font-weight: bold;
 }
 
 .lesson-tab.active, .lesson-tab:hover {
-    background-color: #e0e0e0;
+    border-bottom: 2px solid #8957e5;
+    color: #8957e5;
 }
 
 .lesson-list {
@@ -18,29 +20,17 @@
 }
 
 .lesson-list.active {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .lesson-item {
-    display: block;
-    padding: 1em;
     font-size: 12px;
-    text-decoration: none;
-    color: #000;
-    background-color: #fcfcfc;
 }
 
 .lesson-tab,
 .lesson-item {
     transition: all 0.3s;
     margin-bottom: .5em;
-}
-
-.lesson-item:hover {
-    background-color: #f1f1f1;
-}
-
-.lesson-tab.active,
-.lesson-tab:hover {
-    background-color: #e0e0e0;
 }
