@@ -13,7 +13,9 @@
     <name>programing-study</name>
 
     <url>https://github.com/xiechanglei/programing-study.git</url>
-    <description>https://github.com/xiechanglei/programing-study.git</description>
+    <description>a simple program study service , user code `ProgramStudyRuner.start(8080);` or
+        `ProgramStudyRuner.start();` to start service
+    </description>
 
     <!--项目属性-->
     <properties>
