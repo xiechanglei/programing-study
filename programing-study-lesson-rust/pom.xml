@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>io.github.xiechanglei</groupId>
-            <artifactId>programing-study-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.xiechanglei</groupId>
             <artifactId>programing-study-runner</artifactId>
         </dependency>
     </dependencies>
