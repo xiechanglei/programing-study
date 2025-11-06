@@ -15,14 +15,15 @@
 </parent>
 
 <dependicies>
-    <dependency>
-        <groupId>io.github.xiechanglei</groupId>
-        <artifactId>programing-study-lesson-java</artifactId>
-    </dependency>
+<dependency>
+    <groupId>io.github.xiechanglei</groupId>
+    <artifactId>programing-study-lesson-java</artifactId>
+</dependency>
 </dependicies>
 ```
 
-> 这里使用父项目的方式，只是为了不需要在下方的依赖中不用再写版本号而已。你也可以选择直接引入`programing-study-lesson-java`模块，并且指定版本号。
+> 这里使用父项目的方式，只是为了不需要在下方的依赖中不用再写版本号而已。你也可以选择直接引入`programing-study-lesson-java`
+> 模块，并且指定版本号。
 
 然后在main方法中调用如下代码：
 
@@ -56,8 +57,8 @@ ProgramStudyRuner.start的方法还支持传入一个int类型参数表示指定
     <artifactId>programing-study-api</artifactId>
 </dependency>
 <dependency>
-    <groupId>io.github.xiechanglei</groupId>
-    <artifactId>programing-study-runner</artifactId>
+<groupId>io.github.xiechanglei</groupId>
+<artifactId>programing-study-runner</artifactId>
 </dependency>
 ```
 
@@ -86,9 +87,39 @@ public class YourSubject implements Subject {
 - **docs** 目录下的第一级子目录为分组目录，如**lesson**和**interview**目录,子目录下存放所有的课程的markdown文档,目前仅仅支持检索第一级子目录
 - 静态的资源可以放在**docs**目录下的任何位置,然后在文档中使用相对路径引用资源
 
-```markdown
-[xxxx](./res/1.png)
+由于maven的默认filter机制，可能造成你书写的文档中的内容在打包的时候被替换一些内容，建议单独配置`src/main/resources-docs`
+目录，将原先放在`docs`目录下的内容放在`resources-docs`下，并且在pom.xml中禁用filter以及指定输出到docs目录：
+
+```xml
+
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+        <resource>
+            <directory>src/main/resources-docs</directory>
+            <filtering>false</filtering>
+            <!--            指定最终打包到docs目录下，就不用重复创建docs目录了-->
+            <targetPath>docs</targetPath>
+        </resource>
+    </resources>
+</build>
 ```
+
+当然，如果你的`parent`项目是`programing-study`，则不需要做上述配置，因为父项目已经做了相关配置。
+
+```xml
+
+<parent>
+    <groupId>io.github.xiechanglei</groupId>
+    <artifactId>programing-study</artifactId>
+    <version>3.5.6.1</version>
+</parent>
+```
+
+只是建议，如果你有更好的方式，也可以采用其他方式。
 
 ## that's all , enjoy it .
 
