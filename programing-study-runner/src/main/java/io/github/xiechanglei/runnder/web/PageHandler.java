@@ -16,7 +16,7 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 
 public interface PageHandler {
-    String STATIC_RESOURCE = "statics/";
+    String STATIC_RESOURCE = "assets/";
 
     PageHandler ResourceNotFoundHandler = (exchange, _) -> {
         String response = "404 Not Found";
@@ -57,8 +57,8 @@ public interface PageHandler {
     static void handleSubjectInfo(HttpExchange exchange, SubjectInfo subject) throws IOException {
         HtmlDocumentHelper documentHelper = HtmlDocumentHelper.create(subject.name)
                 .appendCssLink("/css/base.css")
-                .appendJsLink("/js/subject.js")
                 .appendCssLink("/css/subject.css")
+                .appendJsLink("/js/subject.js")
                 .appendBody("<div id='pageContent'>")
                 .appendBody("<h1>" + subject.name + "</h1>");
         String lessonElements = subject.lessons.keySet().stream().map(lesson -> "<span class='lesson-tab' lesson='" + lesson.id() + "'>" + lesson.title() + "</span>").collect(Collectors.joining());
@@ -155,6 +155,11 @@ public interface PageHandler {
             case "gif" -> "image/gif";
             case "svg" -> "image/svg+xml; charset=utf-8";
             case "html" -> "text/html; charset=utf-8";
+            case "woff" -> "font/woff";
+            case "woff2" -> "font/woff2";
+            case "ttf" -> "font/ttf";
+            case "eot" -> "application/vnd.ms-fontobject";
+            case "otf" -> "font/otf";
             default -> "application/octet-stream";
         };
     }

@@ -315,12 +315,18 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!--        打包的时候包含下面的文件夹，并且开启环境参数注入-->
+
+
+
         <resources>
             <!--            主要的资源目录-->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources-assets</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
     </build>

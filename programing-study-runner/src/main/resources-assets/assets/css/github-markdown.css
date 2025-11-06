@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("/font/JetBrainsMono.woff2");
+}
+
+
 .markdown-body {
     --base-size-4: 0.25rem;
     --base-size-8: 0.5rem;
@@ -463,12 +469,6 @@
     margin-left: 0;
 }
 
-.markdown-body tt,
-.markdown-body code,
-.markdown-body samp {
-    font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
-    font-size: 12px;
-}
 
 .markdown-body pre {
     margin-top: 0;
@@ -476,6 +476,23 @@
     font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
     font-size: 12px;
     word-wrap: normal;
+}
+
+.markdown-body tt,
+.markdown-body code,
+.markdown-body samp {
+    font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+    font-size: 12px;
+}
+
+.markdown-body code:not([class]){
+    font-family: "JetBrainsMono", serif;
+}
+
+.markdown-body pre:not([class]){
+    font-size: 14px;
+    line-height: 19px;
+    font-family: "JetBrainsMono", serif;
 }
 
 .markdown-body .octicon {

@@ -11,6 +11,7 @@ public class ProgramStudyWebRender {
 
     /**
      * 定义web服务器的请求处理逻辑。包含一些路由规则
+     *
      * @param server http服务器实例
      */
     public static void handleServer(HttpServer server) {
@@ -19,7 +20,7 @@ public class ProgramStudyWebRender {
             WebPathDesc webPathDesc = WebPathDesc.parseRequestPath(requestPath);
             PageHandler handler = switch (webPathDesc.type) {
                 case "" -> RootHandler;
-                case "css", "js" -> StaticResourceHandler;
+                case "css", "js", "font" -> StaticResourceHandler;
                 default -> SubjectHandler;
             };
             handler.handle(exchange, webPathDesc);
