@@ -1,4 +1,4 @@
-package io.github.xiechanglei.lession.golang;
+package io.github.xiechanglei.lession.python;
 
 import com.google.auto.service.AutoService;
 import io.github.xiechanglei.api.Subject;

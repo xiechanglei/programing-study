@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.xiechanglei</groupId>
+        <artifactId>programing-study</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <name>programing-study-start</name>
+
+    <artifactId>programing-study-start</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-java</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-rust</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-css</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-typescript</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>io.github.xiechanglei</groupId>
+            <artifactId>programing-study-lesson-javascript</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-python</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-golang</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-node</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-dart</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.github.xiechanglei</groupId>-->
+<!--            <artifactId>programing-study-lesson-cpp</artifactId>-->
+<!--        </dependency>-->
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version> <!-- 建议使用较新版本 -->
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <!-- 设置主类 -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>io.github.xiechanglei.start.ProgramStudyRunerTest</mainClass> <!-- 替换你的主类 -->
+                                </transformer>
+                                <!-- 还可以合并其他重要资源，如服务发现文件 -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

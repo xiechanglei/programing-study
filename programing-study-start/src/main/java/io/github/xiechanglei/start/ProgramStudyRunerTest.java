@@ -1,9 +1,9 @@
-package io.github.xiechanglei.test;
+package io.github.xiechanglei.start;
 
 import io.github.xiechanglei.runnder.ProgramStudyRuner;
 
 public class ProgramStudyRunerTest {
-    void main() {
+    static void main() {
         ProgramStudyRuner.start(8080);
     }
 }

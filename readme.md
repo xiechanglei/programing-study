@@ -11,7 +11,7 @@
 <parent>
     <groupId>io.github.xiechanglei</groupId>
     <artifactId>programing-study</artifactId>
-    <version>3.5.6.1</version>
+    <version>3.5.6.2</version>
 </parent>
 
 <dependicies>
@@ -115,7 +115,7 @@ public class YourSubject implements Subject {
 <parent>
     <groupId>io.github.xiechanglei</groupId>
     <artifactId>programing-study</artifactId>
-    <version>3.5.6.1</version>
+    <version>3.5.6.2</version>
 </parent>
 ```
 
